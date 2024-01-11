@@ -1,0 +1,36 @@
+import pandas as pd
+df=pd.read_csv("iris.csv")
+print(iris)
+X=df.iloc[:, :-1].values
+Y=df.iloc[:, 4].values
+
+from sklearn.model_selection import train_test_split
+x_train,x_test,y_train,y_test=train_test_split(X,Y, test_size=0.25)
+
+from sklearn.preprocessing import StandardScaler
+ss=StandardScaler()
+x_train_ss=ss.fit_transform(x_train)
+x_test_ss=ss.fit_transform(x_test)
+
+from sklearn.neighbors import KNeighborsClassifier
+KNC=KNeighborsClassifier(n_neighbors=5)
+KNC.fit(x_train_ss,y_train)
+pred=KNC.predict(x_test_ss)
+print(pred)
+
+from sklearn import metrics
+print("Confusion Matrix : \n", metrics.confusion_matrix(y_test, pred))
+print("classification report : \n",metrics.classification_report(y_test,pred))
+
+import numpy as np
+error=[]
+for i in range(1,40):
+    knn=KNeighborsClassifier(n_neighbors=i)
+    knn.fit(x_train,y_train)
+    pred_i=knn.predict(x_test)
+    error.append(np.mean(pred_i != y_test))
+import matplotlib.pyplot as plt
+plt.plot(range(1,40), error,) 
+plt.ylabel("mean error")
+plt.xlabel("k value")
+plt.show()

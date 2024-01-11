@@ -1,0 +1,32 @@
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+df = pd.read_csv('headbrain.csv')
+
+X = df['Head Size(cm^3)'].values
+Y = df['Brain Weight(grams)'].values
+correlation_coefficient = np.corrcoef(X, Y)
+print(correlation_coefficient)
+
+mean_x = np.mean(X)
+mean_y = np.mean(Y)
+b1 = np.sum((X - mean_x) * (Y - mean_y)) / np.sum((X - mean_x) ** 2)
+b0 = mean_y - (b1 * mean_x)
+print("Coefficients for regression:", b1, b0)
+
+y_regression = b0 + b1 * X
+plt.plot(X, y_regression, color='blue', label='Regression Line')
+plt.scatter(X, Y, c='green', label='Scatter data')
+plt.xlabel('Head Size in cm3')
+plt.ylabel('Brain Weight in grams')
+plt.legend()
+plt.show()
+
+rmse = np.sqrt(np.mean((Y - (b0 + b1 * X)) ** 2))
+print("Root Mean Square Error is", rmse)
+
+ss_tot = np.sum((Y - mean_y) ** 2)
+ss_res = np.sum((Y - (b0 + b1 * X)) ** 2)
+r2 = 1 - (ss_res / ss_tot)
+print("R2 Score", r2)
